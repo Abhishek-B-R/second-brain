@@ -54,7 +54,7 @@ export function EmbeddedContent({ type, embedId, url, title }: EmbeddedContentPr
     return (
       <div className="relative w-full h-64 bg-black rounded-lg overflow-hidden">
         {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-gray-100 dark:bg-gray-800 z-10">
+          <div className="absolute inset-0 flex items-center justify-center bg-gray-100 dark:bg-gray-800 z-20">
             <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
           </div>
         )}
@@ -62,12 +62,11 @@ export function EmbeddedContent({ type, embedId, url, title }: EmbeddedContentPr
           <iframe
             src={`https://www.youtube.com/embed/${embedId}?rel=0&modestbranding=1&enablejsapi=1`}
             title={title}
-            className="w-full h-full border-0"
+            className="w-full h-full border-0 relative z-10"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowFullScreen
             onLoad={handleLoad}
             onError={handleError}
-            style={{ pointerEvents: "auto" }}
           />
         )}
         {error && renderFallback()}
@@ -81,19 +80,19 @@ export function EmbeddedContent({ type, embedId, url, title }: EmbeddedContentPr
     return (
       <div className="relative w-full h-64 bg-gray-50 dark:bg-gray-900 rounded-lg overflow-hidden">
         {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center z-10">
+          <div className="absolute inset-0 flex items-center justify-center z-20">
             <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
           </div>
         )}
         {isVisible && (
-          <div className="w-full h-full overflow-auto">
+          <div className="w-full h-full overflow-auto relative z-10">
             <iframe
               src={`https://platform.twitter.com/embed/Tweet.html?id=${embedId}&theme=${document.documentElement.classList.contains("dark") ? "dark" : "light"}&chrome=nofooter&dnt=true`}
               className="w-full min-h-full border-0"
               title={title}
               onLoad={handleLoad}
               onError={handleError}
-              style={{ pointerEvents: "auto", minHeight: "256px" }}
+              style={{ minHeight: "256px" }}
               scrolling="yes"
             />
           </div>
@@ -109,19 +108,19 @@ export function EmbeddedContent({ type, embedId, url, title }: EmbeddedContentPr
     return (
       <div className="relative w-full h-64 bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/20 dark:to-pink-900/20 rounded-lg overflow-hidden">
         {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center z-10">
+          <div className="absolute inset-0 flex items-center justify-center z-20">
             <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
           </div>
         )}
         {isVisible && (
-          <div className="w-full h-full overflow-auto">
+          <div className="w-full h-full overflow-auto relative z-10">
             <iframe
               src={`https://www.instagram.com/p/${embedId}/embed/captioned`}
               className="w-full min-h-full border-0"
               title={title}
               onLoad={handleLoad}
               onError={handleError}
-              style={{ pointerEvents: "auto", minHeight: "256px" }}
+              style={{ minHeight: "256px" }}
               scrolling="yes"
             />
           </div>
@@ -135,7 +134,7 @@ export function EmbeddedContent({ type, embedId, url, title }: EmbeddedContentPr
     return (
       <div className="relative w-full h-64 bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden group">
         {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center z-10">
+          <div className="absolute inset-0 flex items-center justify-center z-20">
             <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
           </div>
         )}
@@ -144,12 +143,12 @@ export function EmbeddedContent({ type, embedId, url, title }: EmbeddedContentPr
             <img
               src={`https://api.microlink.io/?url=${encodeURIComponent(url)}&screenshot=true&meta=false&embed=screenshot.url`}
               alt={title}
-              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 relative z-10"
               onLoad={handleLoad}
               onError={handleError}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 pointer-events-none" />
+            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-30">
               <Button
                 variant="secondary"
                 className="bg-white/95 text-black hover:bg-white transform hover:scale-105 transition-transform"

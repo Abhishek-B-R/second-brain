@@ -161,28 +161,29 @@ export function EnhancedWebsiteCard({ website, onToggleFavorite, onDelete }: Enh
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Animated background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/5 to-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
       <div className="relative">
         {/* Embedded Content - Now preloaded */}
         <div className="relative overflow-hidden rounded-t-lg">
-          <EmbeddedContent
-            type={website.type}
-            embedId={website.embedId}
-            url={website.url}
-            title={website.title}
-            thumbnail={website.thumbnail}
-          />
+          <div className="relative z-10">
+            <EmbeddedContent
+              type={website.type}
+              embedId={website.embedId}
+              url={website.url}
+              title={website.title}
+              thumbnail={website.thumbnail}
+            />
+          </div>
 
-          {/* Gradient overlay for better text readability */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent" />
+          {/* Gradient overlay only at bottom for text readability */}
+          <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none z-20" />
         </div>
 
         {/* Top badges and actions - positioned over the embed */}
-        <div className="absolute top-4 left-4 right-4 flex justify-between items-start z-20">
+        <div className="absolute top-4 left-4 right-4 flex justify-between items-start z-30 pointer-events-none">
           <Badge
             className={cn(
-              "text-white border-0 shadow-lg backdrop-blur-sm font-medium px-3 py-1",
+              "text-white border-0 shadow-lg backdrop-blur-sm font-medium px-3 py-1 pointer-events-auto",
               `bg-gradient-to-r ${config.gradient}`,
               "hover:scale-105 transition-transform duration-200",
             )}
@@ -191,7 +192,7 @@ export function EnhancedWebsiteCard({ website, onToggleFavorite, onDelete }: Enh
             {config.label}
           </Badge>
 
-          <div className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+          <div className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 pointer-events-auto">
             <Button
               variant="secondary"
               size="icon"
@@ -243,7 +244,7 @@ export function EnhancedWebsiteCard({ website, onToggleFavorite, onDelete }: Enh
 
         {/* View count indicator */}
         {website.viewCount > 0 && (
-          <div className="absolute bottom-4 right-4 bg-black/70 text-white text-xs px-2 py-1 rounded-full backdrop-blur-sm flex items-center space-x-1 z-20">
+          <div className="absolute bottom-4 right-4 bg-black/70 text-white text-xs px-2 py-1 rounded-full backdrop-blur-sm flex items-center space-x-1 z-30 pointer-events-none">
             <Eye className="w-3 h-3" />
             <span>{website.viewCount}</span>
           </div>
@@ -251,7 +252,7 @@ export function EnhancedWebsiteCard({ website, onToggleFavorite, onDelete }: Enh
       </div>
 
       {/* Card content below the embed */}
-      <CardHeader className="pb-3 relative z-10">
+      <CardHeader className="pb-3 relative z-10" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-start justify-between">
           <CardTitle className="text-lg line-clamp-2 group-hover:text-primary transition-colors flex-1 mr-2 font-semibold">
             {website.title}
@@ -263,7 +264,7 @@ export function EnhancedWebsiteCard({ website, onToggleFavorite, onDelete }: Enh
         )}
       </CardHeader>
 
-      <CardContent className="pt-0 relative z-10">
+      <CardContent className="pt-0 relative z-10" onClick={(e) => e.stopPropagation()}>
         {/* Tags */}
         {website.tags && website.tags.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-4">
@@ -302,7 +303,6 @@ export function EnhancedWebsiteCard({ website, onToggleFavorite, onDelete }: Enh
       </CardContent>
 
       {/* Hover effect border */}
-      <div className="absolute inset-0 rounded-lg border-2 border-transparent group-hover:border-primary/20 transition-colors duration-300 pointer-events-none" />
     </Card>
   )
 }
