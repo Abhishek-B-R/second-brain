@@ -4,6 +4,11 @@ MindWell is your personal **second brain**, designed to help you effortlessly ca
 
 Pair it with our Chrome Extension to save articles, videos, and tweets in **one click**, automatically enriched with AI summaries and smart tags.
 
+
+<!-- ## 🎬 Demo Video
+
+[![Watch the demo](./assets/demo-thumbnail.png)](https://youtu.be/yourvideoid) -->
+
 ---
 
 ## 🚀 Features
