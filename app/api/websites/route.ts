@@ -2,7 +2,8 @@ import { type NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import dbConnect from "@/lib/mongodb"
 import Website from "@/models/Website"
-import { analyzeUrl, fetchMetadata } from "@/lib/url-detector"
+import Tag from "@/models/Tag"
+import { enhancedFetchMetadata } from "@/lib/enhanced-url-detector"
 
 export async function GET(request: NextRequest) {
   try {
@@ -61,19 +62,48 @@ export async function POST(request: NextRequest) {
 
     await dbConnect()
 
-    // Analyze URL to determine type and extract metadata
-    const analysis = analyzeUrl(url)
-    const metadata = await fetchMetadata(url)
+    // Enhanced metadata fetching with AI
+    const metadata = await enhancedFetchMetadata(url, title, description)
+
+    // Process tags and update tag usage
+    const processedTags = []
+    if (tags && tags.length > 0) {
+      for (const tagName of tags) {
+        const trimmedTag = tagName.trim().toLowerCase()
+        if (trimmedTag) {
+          // Find or create tag
+          let tag = await Tag.findOne({
+            userId: session.user.email,
+            name: trimmedTag,
+          })
+
+          if (tag) {
+            tag.usageCount += 1
+            await tag.save()
+          } else {
+            tag = new Tag({
+              userId: session.user.email,
+              name: trimmedTag,
+              color: getRandomColor(),
+              usageCount: 1,
+            })
+            await tag.save()
+          }
+
+          processedTags.push(trimmedTag)
+        }
+      }
+    }
 
     const website = new Website({
       userId: session.user.email,
       url,
-      type: analysis.type,
-      embedId: analysis.embedId,
-      title: title || metadata.title || "Untitled",
-      description: description || metadata.description || "",
-      thumbnail: metadata.thumbnail || "/placeholder.svg?height=200&width=300",
-      tags: tags || [],
+      type: metadata.type,
+      embedId: metadata.embedId,
+      title: metadata.title,
+      description: metadata.description,
+      thumbnail: metadata.thumbnail,
+      tags: processedTags,
       isFavorite: false,
       viewCount: 0,
     })
@@ -85,4 +115,20 @@ export async function POST(request: NextRequest) {
     console.error("Error creating website:", error)
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 })
   }
+}
+
+function getRandomColor(): string {
+  const colors = [
+    "#3b82f6", // blue
+    "#ef4444", // red
+    "#10b981", // green
+    "#f59e0b", // yellow
+    "#8b5cf6", // purple
+    "#06b6d4", // cyan
+    "#f97316", // orange
+    "#84cc16", // lime
+    "#ec4899", // pink
+    "#6366f1", // indigo
+  ]
+  return colors[Math.floor(Math.random() * colors.length)]
 }
