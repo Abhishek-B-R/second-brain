@@ -316,8 +316,8 @@ export default function Home() {
               onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
               className="flex items-center space-x-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-white/20 shadow-lg"
             >
-              <Heart className={`w-4 h-4 ${showFavoritesOnly ? "fill-current" : ""}`} />
-              <span>Favorites</span>
+              <Heart className={`w-4 h-4 ${showFavoritesOnly ? "text-red-500" : ""}`} />
+              <span className="dark:text-white">Favorites</span>
             </Button>
 
             <EnhancedAddWebsiteDialog onWebsiteAdded={fetchWebsites} />
