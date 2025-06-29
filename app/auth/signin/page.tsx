@@ -43,7 +43,7 @@ export default function SignIn() {
           </div>
           <div>
             <CardTitle className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              SecondBrain
+              MindWell
             </CardTitle>
             <CardDescription className="text-base mt-2">Your digital knowledge hub awaits</CardDescription>
           </div>

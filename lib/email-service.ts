@@ -34,7 +34,7 @@ export async function sendReminderEmail(
     <body>
         <div class="container">
             <div class="header">
-                <h1>🧠 SecondBrain Reminder</h1>
+                <h1>🧠 MindWell Reminder</h1>
                 <p>Your scheduled content is ready for review!</p>
             </div>
             <div class="content">
@@ -49,11 +49,11 @@ export async function sendReminderEmail(
                 <p>Click the button below to view your content:</p>
                 <a href="${website.url}" class="button">View Content</a>
                 
-                <p>Or visit your SecondBrain dashboard to manage all your saved content.</p>
-                <a href="${process.env.NEXTAUTH_URL}" class="button" style="background: #764ba2;">Open SecondBrain</a>
+                <p>Or visit your MindWell dashboard to manage all your saved content.</p>
+                <a href="${process.env.NEXTAUTH_URL}" class="button" style="background: #764ba2;">Open MindWell</a>
             </div>
             <div class="footer">
-                <p>This reminder was sent from your SecondBrain app. You can manage your reminders in your dashboard.</p>
+                <p>This reminder was sent from your MindWell app. You can manage your reminders in your dashboard.</p>
             </div>
         </div>
     </body>
@@ -61,7 +61,7 @@ export async function sendReminderEmail(
   `
 
   const mailOptions = {
-    from: `"SecondBrain" <${process.env.GMAIL_USER}>`,
+    from: `"MindWell" <${process.env.GMAIL_USER}>`,
     to: userEmail,
     subject: `🧠 Reminder: ${website.title}`,
     html: emailTemplate,

@@ -8,7 +8,7 @@ import { SessionProvider } from "@/components/session-provider"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "SecondBrain - Your Digital Knowledge Hub",
+  title: "MindWell - Your Digital Knowledge Hub",
   description: "Organize and access your favorite content from across the web",
 }
 
