@@ -1,36 +1,90 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🧠 MindWell – Your Second Brain on the Web
 
-## Getting Started
+MindWell is your personal **second brain**, designed to help you effortlessly capture, organize, and revisit everything that inspires you online.
 
-First, run the development server:
+Pair it with our Chrome Extension to save articles, videos, and tweets in **one click**, automatically enriched with AI summaries and smart tags.
+
+---
+
+## 🚀 Features
+
+✅ **One-Click Save from Anywhere**  
+Use the [Chrome Extension](https://github.com/Abhishek-B-R/second-brain-chrome-extension) to instantly capture the current page and store in website.
+
+✅ **AI-Powered Summaries**  
+No time to read? MindWell generates concise summaries automatically.
+
+✅ **Smart Tagging and Collections**  
+Organize your knowledge with tags and collections.
+
+✅ **Reminders & Scheduling**  
+Set reminders to revisit what matters most.
+
+✅ **Lightning-Fast Search**  
+Find saved links, notes, and summaries instantly.
+
+✅ **Privacy-First by Default**  
+Everything is stored securely—only you can access your brain.
+
+---
+
+## 🧩 How It Works
+
+1. **Install the Chrome Extension**
+   - [👉 Get the Extension](https://github.com/Abhishek-B-R/second-brain-chrome-extension)
+
+2. **Sign in to MindWell**
+   - Your saved content syncs automatically.
+
+3. **Save Links**
+   - Click the extension icon on any page to save and summarize.
+
+4. **Browse Your Second Brain**
+   - Revisit, search, and organize your content any time.
+
+---
+
+## ✨ Screenshots
+
+![Dashboard Screenshot](https://mindwell.abhi.wtf/dashboard.png)
+![Extension Screenshot](https://mindwell.abhi.wtf/extension.png)
+
+---
+
+## 🛠️ Tech Stack
+
+- Next.js
+- Tailwind CSS
+- MongoDB & Mongoose
+- Gemini API (summarization)
+- Nodemailer for notification
+
+---
+
+## 🌟 Get Started
+
+Clone the repo:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/Abhishek-B-R/second-brain.git
+cd second-brain
+```
+Install necessary dependencies
+```bash
+npm install
+mv .env.example .env
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Fill in your env variables
+```bash
+npm run dev
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📌 Related Project
+Looking for the Chrome Extension?
+👉 [second-brain-chrome-extension](https://github.com/Abhishek-B-R/second-brain-chrome-extension)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📝 License
+MIT
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## ⭐ Star this repo to support the project! It really helps in motivating me.
