@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 "use client"
 
 import { useState, useEffect, useRef } from "react"
@@ -52,21 +51,22 @@ export function EmbeddedContent({ type, embedId, url, title }: EmbeddedContentPr
     if (!embedId) return renderFallback()
 
     return (
-      <div className="relative w-full h-48 bg-black rounded-lg overflow-hidden">
+      <div className="relative w-full h-64 bg-black rounded-lg overflow-hidden">
         {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-gray-100 dark:bg-gray-800">
+          <div className="absolute inset-0 flex items-center justify-center bg-gray-100 dark:bg-gray-800 z-10">
             <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
           </div>
         )}
         {isVisible && (
           <iframe
-            src={`https://www.youtube.com/embed/${embedId}?rel=0&modestbranding=1`}
+            src={`https://www.youtube.com/embed/${embedId}?rel=0&modestbranding=1&enablejsapi=1`}
             title={title}
-            className="w-full h-full"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            className="w-full h-full border-0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowFullScreen
             onLoad={handleLoad}
             onError={handleError}
+            style={{ pointerEvents: "auto" }}
           />
         )}
         {error && renderFallback()}
@@ -78,20 +78,24 @@ export function EmbeddedContent({ type, embedId, url, title }: EmbeddedContentPr
     if (!embedId) return renderFallback()
 
     return (
-      <div className="relative w-full h-48 bg-gray-50 dark:bg-gray-900 rounded-lg overflow-hidden">
+      <div className="relative w-full h-64 bg-gray-50 dark:bg-gray-900 rounded-lg overflow-hidden">
         {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center">
+          <div className="absolute inset-0 flex items-center justify-center z-10">
             <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
           </div>
         )}
         {isVisible && (
-          <iframe
-            src={`https://platform.twitter.com/embed/Tweet.html?id=${embedId}&theme=${document.documentElement.classList.contains("dark") ? "dark" : "light"}&chrome=nofooter`}
-            className="w-full h-full border-0"
-            title={title}
-            onLoad={handleLoad}
-            onError={handleError}
-          />
+          <div className="w-full h-full overflow-auto">
+            <iframe
+              src={`https://platform.twitter.com/embed/Tweet.html?id=${embedId}&theme=${document.documentElement.classList.contains("dark") ? "dark" : "light"}&chrome=nofooter&dnt=true`}
+              className="w-full min-h-full border-0"
+              title={title}
+              onLoad={handleLoad}
+              onError={handleError}
+              style={{ pointerEvents: "auto", minHeight: "256px" }}
+              scrolling="yes"
+            />
+          </div>
         )}
         {error && renderFallback()}
       </div>
@@ -102,20 +106,24 @@ export function EmbeddedContent({ type, embedId, url, title }: EmbeddedContentPr
     if (!embedId) return renderFallback()
 
     return (
-      <div className="relative w-full h-48 bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/20 dark:to-pink-900/20 rounded-lg overflow-hidden">
+      <div className="relative w-full h-64 bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/20 dark:to-pink-900/20 rounded-lg overflow-hidden">
         {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center">
+          <div className="absolute inset-0 flex items-center justify-center z-10">
             <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
           </div>
         )}
         {isVisible && (
-          <iframe
-            src={`https://www.instagram.com/p/${embedId}/embed/captioned`}
-            className="w-full h-full border-0"
-            title={title}
-            onLoad={handleLoad}
-            onError={handleError}
-          />
+          <div className="w-full h-full overflow-auto">
+            <iframe
+              src={`https://www.instagram.com/p/${embedId}/embed/captioned`}
+              className="w-full min-h-full border-0"
+              title={title}
+              onLoad={handleLoad}
+              onError={handleError}
+              style={{ pointerEvents: "auto", minHeight: "256px" }}
+              scrolling="yes"
+            />
+          </div>
         )}
         {error && renderFallback()}
       </div>
@@ -124,9 +132,9 @@ export function EmbeddedContent({ type, embedId, url, title }: EmbeddedContentPr
 
   const renderWebsitePreview = () => {
     return (
-      <div className="relative w-full h-48 bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden group">
+      <div className="relative w-full h-64 bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden group">
         {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center">
+          <div className="absolute inset-0 flex items-center justify-center z-10">
             <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
           </div>
         )}
@@ -170,7 +178,7 @@ export function EmbeddedContent({ type, embedId, url, title }: EmbeddedContentPr
 
     return (
       <div
-        className="w-full h-48 bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden flex items-center justify-center group cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+        className="w-full h-64 bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden flex items-center justify-center group cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
         onClick={() => window.open(url, "_blank", "noopener,noreferrer")}
       >
         <div className="text-center space-y-3">
