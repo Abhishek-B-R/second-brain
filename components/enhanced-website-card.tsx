@@ -154,16 +154,15 @@ export function EnhancedWebsiteCard({ website, onToggleFavorite, onDelete }: Enh
         "group cursor-pointer transition-all duration-500 hover:shadow-2xl hover:-translate-y-3",
         "bg-gradient-to-br backdrop-blur-md border-border/50 overflow-hidden",
         "transform-gpu will-change-transform relative",
+        "h-[520px] flex flex-col", // Fixed height for all cards
         config.bgGradient,
         isHovered && "shadow-2xl scale-[1.02] ring-2 ring-primary/20",
       )}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Animated background gradient */}
-
       <div className="relative">
-        {/* Embedded Content - Now preloaded */}
+        {/* Embedded Content - Fixed height */}
         <div className="relative overflow-hidden rounded-t-lg">
           <div className="relative z-10">
             <EmbeddedContent
@@ -251,58 +250,66 @@ export function EnhancedWebsiteCard({ website, onToggleFavorite, onDelete }: Enh
         )}
       </div>
 
-      {/* Card content below the embed */}
-      <CardHeader className="pb-3 relative z-10" onClick={(e) => e.stopPropagation()}>
-        <div className="flex items-start justify-between">
-          <CardTitle className="text-lg line-clamp-2 group-hover:text-primary transition-colors flex-1 mr-2 font-semibold">
-            {website.title}
-          </CardTitle>
-          {website.isFavorite && <Heart className="w-5 h-5 fill-red-500 text-red-500 flex-shrink-0 animate-pulse" />}
-        </div>
-        {website.description && (
-          <CardDescription className="line-clamp-3 text-sm leading-relaxed">{website.description}</CardDescription>
-        )}
-      </CardHeader>
+      {/* Card content below the embed - Flexible height with constraints */}
+      <div className="flex-1 flex flex-col">
+        <CardHeader className="pb-3 relative z-10 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
+          <div className="flex items-start justify-between">
+            <CardTitle className="text-lg line-clamp-2 group-hover:text-primary transition-colors flex-1 mr-2 font-semibold min-h-[3.5rem]">
+              {website.title}
+            </CardTitle>
+            {website.isFavorite && <Heart className="w-5 h-5 fill-red-500 text-red-500 flex-shrink-0 animate-pulse" />}
+          </div>
+          {website.description && (
+            <CardDescription className="line-clamp-3 text-sm leading-relaxed min-h-[4rem]">
+              {website.description}
+            </CardDescription>
+          )}
+        </CardHeader>
 
-      <CardContent className="pt-0 relative z-10" onClick={(e) => e.stopPropagation()}>
-        {/* Tags */}
-        {website.tags && website.tags.length > 0 && (
-          <div className="flex flex-wrap gap-2 mb-4">
-            {website.tags.slice(0, 4).map((tag, index) => (
-              <Badge
-                key={tag}
-                variant="secondary"
-                className="text-xs px-2 py-1 font-medium hover:scale-105 transition-transform duration-200"
-                style={{
-                  backgroundColor: `${getTagColor(index)}15`,
-                  color: getTagColor(index),
-                  borderColor: `${getTagColor(index)}30`,
-                }}
-              >
-                {tag}
-              </Badge>
-            ))}
-            {website.tags.length > 4 && (
-              <Badge variant="secondary" className="text-xs px-2 py-1">
-                +{website.tags.length - 4}
-              </Badge>
+        <CardContent
+          className="pt-0 relative z-10 flex-1 flex flex-col justify-between"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Tags */}
+          <div className="flex-1">
+            {website.tags && website.tags.length > 0 && (
+              <div className="flex flex-wrap gap-2 mb-4">
+                {website.tags.slice(0, 3).map((tag, index) => (
+                  <Badge
+                    key={tag}
+                    variant="secondary"
+                    className="text-xs px-2 py-1 font-medium hover:scale-105 transition-transform duration-200"
+                    style={{
+                      backgroundColor: `${getTagColor(index)}15`,
+                      color: getTagColor(index),
+                      borderColor: `${getTagColor(index)}30`,
+                    }}
+                  >
+                    {tag}
+                  </Badge>
+                ))}
+                {website.tags.length > 3 && (
+                  <Badge variant="secondary" className="text-xs px-2 py-1">
+                    +{website.tags.length - 3}
+                  </Badge>
+                )}
+              </div>
             )}
           </div>
-        )}
 
-        <div className="flex items-center justify-between text-xs text-muted-foreground">
-          <div className="flex items-center space-x-2">
-            <Calendar className="w-3 h-3" />
-            <span>{formatDate(website.createdAt)}</span>
+          {/* Footer - Always at bottom */}
+          <div className="flex items-center justify-between text-xs text-muted-foreground mt-auto">
+            <div className="flex items-center space-x-2">
+              <Calendar className="w-3 h-3" />
+              <span>{formatDate(website.createdAt)}</span>
+            </div>
+            <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <ExternalLink className="w-3 h-3" />
+              <span>View</span>
+            </div>
           </div>
-          <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <ExternalLink className="w-3 h-3" />
-            <span>View</span>
-          </div>
-        </div>
-      </CardContent>
-
-      {/* Hover effect border */}
+        </CardContent>
+      </div>
     </Card>
   )
 }
