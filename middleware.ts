@@ -9,12 +9,12 @@ export async function middleware(request: NextRequest) {
   })
 
   // If user is not authenticated and trying to access protected routes
-  if (!token && request.nextUrl.pathname !== "/") {
+  if (!token && request.nextUrl.pathname !== "/auth/signin" && request.nextUrl.pathname !== "/landing") {
     return NextResponse.redirect(new URL("/landing", request.url))
   }
 
   // If user is authenticated and trying to access signin or landing page, redirect to home
-  if (token && (request.nextUrl.pathname === "/auth/signin")) {
+  if (token && (request.nextUrl.pathname === "/auth/signin" || request.nextUrl.pathname === "/landing")) {
     return NextResponse.redirect(new URL("/", request.url))
   }
 
