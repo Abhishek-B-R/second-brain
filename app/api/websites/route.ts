@@ -18,9 +18,17 @@ export async function GET(request: NextRequest) {
     const type = searchParams.get("type")
     const search = searchParams.get("search")
     const favorites = searchParams.get("favorites") === "true"
+    const folderId = searchParams.get("folderId")
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const query: any = { userId: session.user.email }
+
+    // Handle folder filtering
+    if (folderId === "null" || folderId === null) {
+      query.folderId = null // Root folder
+    } else if (folderId) {
+      query.folderId = folderId
+    }
 
     if (type && type !== "all") {
       query.type = type
@@ -54,7 +62,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const { url, title, description, tags, scheduledFor } = await request.json()
+    const { url, title, description, tags, scheduledFor, folderId } = await request.json()
 
     if (!url) {
       return NextResponse.json({ error: "URL is required" }, { status: 400 })
@@ -114,6 +122,7 @@ export async function POST(request: NextRequest) {
 
     const website = new Website({
       userId: session.user.email,
+      folderId: folderId || null, // null for root folder
       url: url.trim(),
       type: metadata.type,
       embedId: metadata.embedId,

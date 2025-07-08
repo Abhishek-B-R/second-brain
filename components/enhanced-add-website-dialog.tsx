@@ -30,8 +30,22 @@ import { Badge } from "@/components/ui/badge"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Calendar } from "@/components/ui/calendar"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { format } from "date-fns"
-import { Plus, X, Link, Loader2, Sparkles, Check, ChevronsUpDown, Wand2, CalendarIcon, Clock } from "lucide-react"
+import {
+  Plus,
+  X,
+  Link,
+  Loader2,
+  Sparkles,
+  Check,
+  ChevronsUpDown,
+  Wand2,
+  CalendarIcon,
+  Clock,
+  Folder,
+  Home,
+} from "lucide-react"
 import { toast } from "@/hooks/use-toast"
 
 interface Tag {
@@ -41,11 +55,20 @@ interface Tag {
   usageCount: number
 }
 
-interface EnhancedAddWebsiteDialogProps {
-  onWebsiteAdded: () => void
+interface FolderOption {
+  _id: string
+  name: string
+  path: string
+  level: number
+  color: string
 }
 
-export function EnhancedAddWebsiteDialog({ onWebsiteAdded }: EnhancedAddWebsiteDialogProps) {
+interface EnhancedAddWebsiteDialogProps {
+  onWebsiteAdded: () => void
+  currentFolderId?: string | null
+}
+
+export function EnhancedAddWebsiteDialog({ onWebsiteAdded, currentFolderId }: EnhancedAddWebsiteDialogProps) {
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [aiGenerating, setAiGenerating] = useState(false)
@@ -58,30 +81,66 @@ export function EnhancedAddWebsiteDialog({ onWebsiteAdded }: EnhancedAddWebsiteD
   const [newTagName, setNewTagName] = useState("")
   const [scheduledFor, setScheduledFor] = useState<Date>()
   const [calendarOpen, setCalendarOpen] = useState(false)
+  const [selectedFolderId, setSelectedFolderId] = useState<string | null>(currentFolderId || null)
+  const [availableFolders, setAvailableFolders] = useState<FolderOption[]>([])
 
   // Duplicate handling
   const [showReplaceDialog, setShowReplaceDialog] = useState(false)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [existingWebsite, setExistingWebsite] = useState<any>(null)
 
-  // Fetch available tags
+  // Fetch available tags and folders
   useEffect(() => {
-    const fetchTags = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetch("/api/tags")
-        if (response.ok) {
-          const tags = await response.json()
+        // Fetch tags
+        const tagsResponse = await fetch("/api/tags")
+        if (tagsResponse.ok) {
+          const tags = await tagsResponse.json()
           setAvailableTags(tags)
         }
+
+        // Fetch folders
+        const foldersResponse = await fetch("/api/folders/tree")
+        if (foldersResponse.ok) {
+          const data = await foldersResponse.json()
+          const flatFolders = flattenFolders(data.tree)
+          setAvailableFolders(flatFolders)
+        }
       } catch (error) {
-        console.error("Error fetching tags:", error)
+        console.error("Error fetching data:", error)
       }
     }
 
     if (open) {
-      fetchTags()
+      fetchData()
+      setSelectedFolderId(currentFolderId || null)
     }
-  }, [open])
+  }, [open, currentFolderId])
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const flattenFolders = (folders: any[]): FolderOption[] => {
+    const result: FolderOption[] = []
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const flatten = (folderList: any[]) => {
+      for (const folder of folderList) {
+        result.push({
+          _id: folder._id,
+          name: folder.name,
+          path: folder.path,
+          level: folder.level,
+          color: folder.color,
+        })
+        if (folder.children && folder.children.length > 0) {
+          flatten(folder.children)
+        }
+      }
+    }
+
+    flatten(folders)
+    return result
+  }
 
   const addTag = (tagName: string) => {
     const trimmedTag = tagName.trim().toLowerCase()
@@ -165,6 +224,7 @@ export function EnhancedAddWebsiteDialog({ onWebsiteAdded }: EnhancedAddWebsiteD
           description: description.trim(),
           tags: selectedTags,
           scheduledFor: scheduledFor?.toISOString(),
+          folderId: selectedFolderId,
         }),
       })
 
@@ -183,9 +243,13 @@ export function EnhancedAddWebsiteDialog({ onWebsiteAdded }: EnhancedAddWebsiteD
 
       const website = await response.json()
 
+      const folderName = selectedFolderId
+        ? availableFolders.find((f) => f._id === selectedFolderId)?.name || "folder"
+        : "root"
+
       toast({
         title: "Website Added!",
-        description: `${website.title} has been added to your collection${scheduledFor ? " with reminder set" : ""}`,
+        description: `${website.title} has been added to ${folderName}${scheduledFor ? " with reminder set" : ""}`,
       })
 
       resetForm()
@@ -217,6 +281,7 @@ export function EnhancedAddWebsiteDialog({ onWebsiteAdded }: EnhancedAddWebsiteD
           tags: selectedTags,
           scheduledFor: scheduledFor?.toISOString(),
           replaceId: existingWebsite._id,
+          folderId: selectedFolderId,
         }),
       })
 
@@ -253,6 +318,7 @@ export function EnhancedAddWebsiteDialog({ onWebsiteAdded }: EnhancedAddWebsiteD
     setSelectedTags([])
     setNewTagName("")
     setScheduledFor(undefined)
+    setSelectedFolderId(currentFolderId || null)
     setOpen(false)
     setExistingWebsite(null)
   }
@@ -260,6 +326,12 @@ export function EnhancedAddWebsiteDialog({ onWebsiteAdded }: EnhancedAddWebsiteD
   const getTagColor = (tagName: string) => {
     const tag = availableTags.find((t) => t.name === tagName)
     return tag?.color || "#3b82f6"
+  }
+
+  const getFolderDisplayName = (folderId: string | null) => {
+    if (!folderId) return "Home (Root)"
+    const folder = availableFolders.find((f) => f._id === folderId)
+    return folder ? folder.path : "Unknown Folder"
   }
 
   return (
@@ -306,6 +378,47 @@ export function EnhancedAddWebsiteDialog({ onWebsiteAdded }: EnhancedAddWebsiteD
                   <span className="hidden sm:inline">AI Generate</span>
                 </Button>
               </div>
+            </div>
+
+            {/* Folder Selection */}
+            <div className="space-y-2">
+              <Label htmlFor="folder">Save to Folder</Label>
+              <Select
+                value={selectedFolderId || "root"}
+                onValueChange={(value) => setSelectedFolderId(value === "root" ? null : value)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a folder">
+                    <div className="flex items-center space-x-2">
+                      {selectedFolderId ? (
+                        <Folder
+                          className="w-4 h-4"
+                          style={{ color: availableFolders.find((f) => f._id === selectedFolderId)?.color }}
+                        />
+                      ) : (
+                        <Home className="w-4 h-4 text-blue-500" />
+                      )}
+                      <span>{getFolderDisplayName(selectedFolderId)}</span>
+                    </div>
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="root">
+                    <div className="flex items-center space-x-2">
+                      <Home className="w-4 h-4 text-blue-500" />
+                      <span>Home (Root)</span>
+                    </div>
+                  </SelectItem>
+                  {availableFolders.map((folder) => (
+                    <SelectItem key={folder._id} value={folder._id}>
+                      <div className="flex items-center space-x-2" style={{ paddingLeft: `${folder.level * 16}px` }}>
+                        <Folder className="w-4 h-4" style={{ color: folder.color }} />
+                        <span>{folder.name}</span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

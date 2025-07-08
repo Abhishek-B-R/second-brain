@@ -2,6 +2,7 @@ import mongoose, { type Document, Schema } from "mongoose"
 
 export interface IWebsite extends Document {
   userId: string
+  folderId?: string // Reference to folder
   type: "youtube" | "twitter" | "instagram" | "website"
   url: string
   title: string
@@ -22,6 +23,11 @@ const WebsiteSchema = new Schema<IWebsite>(
     userId: {
       type: String,
       required: true,
+      index: true,
+    },
+    folderId: {
+      type: String,
+      default: null, // null means root folder
       index: true,
     },
     type: {
@@ -75,7 +81,7 @@ const WebsiteSchema = new Schema<IWebsite>(
 )
 
 // Create compound index for efficient queries
-WebsiteSchema.index({ userId: 1, createdAt: -1 })
+WebsiteSchema.index({ userId: 1, folderId: 1, createdAt: -1 })
 WebsiteSchema.index({ userId: 1, type: 1 })
 WebsiteSchema.index({ userId: 1, isFavorite: 1 })
 WebsiteSchema.index({ userId: 1, url: 1 }, { unique: true })
