@@ -58,19 +58,17 @@ export function FolderTree({
 
         // Auto-expand folders that contain the current folder
         const expanded = new Set<string>()
-        const expandParents = (folders: FolderNode[], targetId: string | null): boolean => {
+        // Add all folder IDs to expanded set
+        const expandAllFolders = (folders: FolderNode[]) => {
           for (const folder of folders) {
-            if (folder._id === targetId) {
-              return true
-            }
-            if (expandParents(folder.children, targetId)) {
-              expanded.add(folder._id)
-              return true
+            expanded.add(folder._id)
+            if (folder.children.length > 0) {
+              expandAllFolders(folder.children)
             }
           }
-          return false
         }
-        expandParents(data.tree, currentFolderId)
+        
+        expandAllFolders(data.tree)
         setExpandedFolders(expanded)
       }
     } catch (error) {
@@ -80,7 +78,6 @@ export function FolderTree({
 
   useEffect(() => {
     fetchFolderTree()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentFolderId, refreshTrigger]) // Add refreshTrigger dependency
 
   const toggleFolder = (folderId: string) => {
@@ -165,9 +162,9 @@ export function FolderTree({
             ) : (
               <Folder className="h-3.5 w-3.5 flex-shrink-0" style={{ color: folder.color }} />
             )}
-            <span className="text-xs font-medium truncate">{folder.name}</span>
+            <span className="text-md font-medium truncate">{folder.name}</span>
             {folder.websiteCount > 0 && (
-              <Badge variant="secondary" className="text-xs px-1 py-0 h-4 text-[10px]">
+              <Badge variant="secondary" className="text-md px-1 py-0 h-4 text-[10px]">
                 {folder.websiteCount}
               </Badge>
             )}
@@ -221,9 +218,9 @@ export function FolderTree({
         onClick={() => onFolderSelect(null, "Home")}
       >
         <Home className="h-3.5 w-3.5 flex-shrink-0 text-blue-500" />
-        <span className="text-xs font-medium">Home</span>
+        <span className="text-lg font-medium">Home</span>
         {rootWebsiteCount > 0 && (
-          <Badge variant="secondary" className="text-xs px-1 py-0 h-4 text-[10px]">
+          <Badge variant="secondary" className="text-lg px-1 py-0 h-4 text-[10px]">
             {rootWebsiteCount}
           </Badge>
         )}

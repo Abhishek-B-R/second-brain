@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { motion } from "framer-motion"
 import {
   Brain,
   Chrome,
@@ -119,6 +120,12 @@ export default function LandingPage() {
       <Header user={{ name: null, email: null, image: null }} />
       {/* Hero Section */}
       <section className="relative overflow-hidden">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="max-w-4xl mx-auto space-y-8"
+        >
         <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
         <div className="container mx-auto px-4 py-20 relative z-10">
           <div className="text-center space-y-8 max-w-4xl mx-auto">
@@ -198,6 +205,7 @@ export default function LandingPage() {
             </div>
           </div>
         </div>
+        </motion.div>
       </section>
 
       {/* Chrome Extension Spotlight */}
@@ -319,39 +327,61 @@ export default function LandingPage() {
 
       {/* Features Grid */}
       <section className="py-20">
-        <div className="container mx-auto px-4">
-          <div className="text-center space-y-6 mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              Powerful Features
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Everything you need to build and maintain your digital knowledge base
-            </p>
-          </div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="text-center mb-16"
+        >
+          <div className="container mx-auto px-4">
+            <div className="text-center space-y-6 mb-16">
+              <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                Powerful Features
+              </h2>
+              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+                Everything you need to build and maintain your digital knowledge base
+              </p>
+            </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {features.map((feature, index) => (
-              <Card
-                key={index}
-                className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 bg-white/80 backdrop-blur-sm border-0 shadow-lg dark:bg-gray-800 dark:border-gray-700"
-              >
-                <CardContent className="p-8 text-center space-y-4">
-                  <div
-                    className={`w-16 h-16 mx-auto rounded-2xl bg-gradient-to-r ${feature.color} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+              {features.map((feature, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                >
+                  <Card
+                    className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 bg-white/80 backdrop-blur-sm border-0 shadow-lg dark:bg-gray-800 dark:border-gray-700"
                   >
-                    <feature.icon className="w-8 h-8 text-white" />
-                  </div>
-                  <h3 className="text-xl font-semibold">{feature.title}</h3>
-                  <p className="text-muted-foreground leading-relaxed">{feature.description}</p>
-                </CardContent>
-              </Card>
-            ))}
+                    <CardContent className="p-8 text-center space-y-4">
+                      <div
+                        className={`w-16 h-16 mx-auto rounded-2xl bg-gradient-to-r ${feature.color} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}
+                      >
+                        <feature.icon className="w-8 h-8 text-white" />
+                      </div>
+                      <h3 className="text-xl font-semibold">{feature.title}</h3>
+                      <p className="text-muted-foreground leading-relaxed">{feature.description}</p>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
           </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* Content Types */}
       <section className="py-20 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-950">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="text-center mb-16"
+        >
         <div className="container mx-auto px-4">
           <div className="text-center space-y-6 mb-16">
             <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
@@ -365,8 +395,8 @@ export default function LandingPage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto">
             {contentTypes.map((type, index) => (
               <Card
-                key={index}
-                className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 bg-white/80 backdrop-blur-sm border-0 dark:bg-gray-800 dark:border-gray-700"
+              key={index}
+              className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 bg-white/80 backdrop-blur-sm border-0 dark:bg-gray-800 dark:border-gray-700"
               >
                 <CardContent className="p-6 text-center space-y-4">
                   <type.icon className={`w-12 h-12 mx-auto ${type.color} group-hover:scale-110 transition-transform`} />
@@ -376,10 +406,18 @@ export default function LandingPage() {
             ))}
           </div>
         </div>
+        </motion.div>
       </section>
 
       {/* Final CTA */}
       <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="text-center mb-16"
+        >
         <div className="container mx-auto px-4 text-center space-y-8">
           <h2 className="text-4xl md:text-5xl font-bold">Ready to Build Your Second Brain?</h2>
           <p className="text-xl text-blue-100 max-w-2xl mx-auto">
@@ -391,7 +429,7 @@ export default function LandingPage() {
               onClick={handleGetStarted}
               disabled={isLoading}
               className="bg-white text-blue-600 hover:bg-blue-50 px-8 py-4 text-lg font-semibold rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
-            >
+              >
               {isLoading ? (
                 <div className="flex items-center space-x-2">
                   <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
@@ -409,12 +447,13 @@ export default function LandingPage() {
               variant="outline"
               className="border-2 border-white text-white hover:bg-white hover:text-blue-600 px-8 py-4 text-lg font-semibold rounded-2xl transition-all duration-300 bg-transparent"
               onClick={() => window.open("https://github.com/Abhishek-B-R/second-brain-chrome-extension", "_blank")}
-            >
+              >
               <Chrome className="w-5 h-5 mr-2" />
               Install Extension
             </Button>
           </div>
         </div>
+        </motion.div>
       </section>
 
       {/* Footer */}
@@ -429,7 +468,7 @@ export default function LandingPage() {
             </div>
 
             <div className="flex items-center space-x-6 text-sm text-gray-400">
-              <span>© 2024 SecondBrain. All rights reserved.</span>
+              <span>© 2025 SecondBrain. All rights reserved.</span>
               <Button
                 variant="ghost"
                 size="sm"

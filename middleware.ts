@@ -8,6 +8,11 @@ export async function middleware(request: NextRequest) {
     secret: process.env.NEXTAUTH_SECRET,
   })
 
+  // Allow public access to shared brains
+  if (request.nextUrl.pathname.startsWith("/share/")) {
+    return NextResponse.next()
+  }
+
   // If user is not authenticated and trying to access protected routes
   if (!token && request.nextUrl.pathname !== "/auth/signin" && request.nextUrl.pathname !== "/landing") {
     return NextResponse.redirect(new URL("/landing", request.url))
@@ -26,11 +31,12 @@ export const config = {
     /*
      * Match all request paths except for the ones starting with:
      * - api/auth (authentication routes)
+     * - api/share-brain (public share brain API routes)
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
      * - public folder
      */
-    "/((?!api/auth|_next/static|_next/image|favicon.ico|public).*)",
+    "/((?!api/auth|api/share-brain|_next/static|_next/image|favicon.ico|public).*)",
   ],
 }
