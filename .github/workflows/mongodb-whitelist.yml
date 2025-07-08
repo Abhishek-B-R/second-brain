@@ -1,0 +1,22 @@
+name: MongoDB Re-Add 0.0.0.0/0 IP
+
+on:
+  schedule:
+    - cron: '0 0 * * 1'  # Runs every Monday at 00:00 UTC
+  workflow_dispatch:     # Allows manual trigger
+
+jobs:
+  add-ip:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add 0.0.0.0/0 to MongoDB Atlas IP Access List
+        run: |
+          curl -s -u "${{ secrets.MONGODB_PUBLIC_KEY }}:${{ secrets.MONGODB_PRIVATE_KEY }}" \
+            --digest \
+            -H "Content-Type: application/json" \
+            -X POST \
+            -d '[{
+              "ipAddress": "0.0.0.0/0",
+              "comment": "Auto re-added weekly via GitHub Actions"
+            }]' \
+            "https://cloud.mongodb.com/api/atlas/v1.0/groups/${{ secrets.MONGODB_PROJECT_ID }}/accessList"
