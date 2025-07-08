@@ -80,6 +80,7 @@ export function FolderTree({
 
   useEffect(() => {
     fetchFolderTree()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentFolderId, refreshTrigger]) // Add refreshTrigger dependency
 
   const toggleFolder = (folderId: string) => {

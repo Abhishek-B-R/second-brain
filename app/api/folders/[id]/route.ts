@@ -4,13 +4,15 @@ import dbConnect from "@/lib/mongodb"
 import Folder from "@/models/Folder"
 import Website from "@/models/Website"
 
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function PUT(request: NextRequest, context: any) {
   try {
     const session = await getServerSession()
     if (!session?.user?.email) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
+    const { params } = context
     const { id } = params
     const updates = await request.json()
 
@@ -29,13 +31,14 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function DELETE(context: any) {
   try {
     const session = await getServerSession()
     if (!session?.user?.email) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
-
+    const { params } = context
     const { id } = params
 
     await dbConnect()
