@@ -123,7 +123,7 @@ export default function LandingPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-rose-50 to-amber-100 dark:from-gray-900 dark:via-slate-900 dark:to-amber-950">
       <Header user={{ name: null, email: null, image: null }} />
       {/* Hero Section */}
-      <section className="relative overflow-hidden">
+      <section className="relative overflow-hidden md:pb-32">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
