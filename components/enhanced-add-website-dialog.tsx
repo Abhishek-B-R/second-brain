@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -12,7 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -22,16 +22,33 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Badge } from "@/components/ui/badge"
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Calendar } from "@/components/ui/calendar"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { format } from "date-fns"
+} from "@/components/ui/alert-dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { format } from "date-fns";
 import {
   Plus,
   X,
@@ -45,82 +62,87 @@ import {
   Clock,
   Folder,
   Home,
-} from "lucide-react"
-import { toast } from "@/hooks/use-toast"
+} from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 interface Tag {
-  _id: string
-  name: string
-  color: string
-  usageCount: number
+  _id: string;
+  name: string;
+  color: string;
+  usageCount: number;
 }
 
 interface FolderOption {
-  _id: string
-  name: string
-  path: string
-  level: number
-  color: string
+  _id: string;
+  name: string;
+  path: string;
+  level: number;
+  color: string;
 }
 
 interface EnhancedAddWebsiteDialogProps {
-  onWebsiteAdded: () => void
-  currentFolderId?: string | null
+  onWebsiteAdded: () => void;
+  currentFolderId?: string | null;
 }
 
-export function EnhancedAddWebsiteDialog({ onWebsiteAdded, currentFolderId }: EnhancedAddWebsiteDialogProps) {
-  const [open, setOpen] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [aiGenerating, setAiGenerating] = useState(false)
-  const [url, setUrl] = useState("")
-  const [title, setTitle] = useState("")
-  const [description, setDescription] = useState("")
-  const [selectedTags, setSelectedTags] = useState<string[]>([])
-  const [availableTags, setAvailableTags] = useState<Tag[]>([])
-  const [tagSearchOpen, setTagSearchOpen] = useState(false)
-  const [newTagName, setNewTagName] = useState("")
-  const [scheduledFor, setScheduledFor] = useState<Date>()
-  const [calendarOpen, setCalendarOpen] = useState(false)
-  const [selectedFolderId, setSelectedFolderId] = useState<string | null>(currentFolderId || null)
-  const [availableFolders, setAvailableFolders] = useState<FolderOption[]>([])
+export function EnhancedAddWebsiteDialog({
+  onWebsiteAdded,
+  currentFolderId,
+}: EnhancedAddWebsiteDialogProps) {
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [aiGenerating, setAiGenerating] = useState(false);
+  const [url, setUrl] = useState("");
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [availableTags, setAvailableTags] = useState<Tag[]>([]);
+  const [tagSearchOpen, setTagSearchOpen] = useState(false);
+  const [newTagName, setNewTagName] = useState("");
+  const [scheduledFor, setScheduledFor] = useState<Date>();
+  const [calendarOpen, setCalendarOpen] = useState(false);
+  const [selectedFolderId, setSelectedFolderId] = useState<string | null>(
+    currentFolderId || null
+  );
+  const [availableFolders, setAvailableFolders] = useState<FolderOption[]>([]);
 
   // Duplicate handling
-  const [showReplaceDialog, setShowReplaceDialog] = useState(false)
+  const [showReplaceDialog, setShowReplaceDialog] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [existingWebsite, setExistingWebsite] = useState<any>(null)
+  const [existingWebsite, setExistingWebsite] = useState<any>(null);
 
   // Fetch available tags and folders
   useEffect(() => {
     const fetchData = async () => {
       try {
         // Fetch tags
-        const tagsResponse = await fetch("/api/tags")
+        const tagsResponse = await fetch("/api/tags");
         if (tagsResponse.ok) {
-          const tags = await tagsResponse.json()
-          setAvailableTags(tags)
+          const tags = await tagsResponse.json();
+          setAvailableTags(tags);
         }
 
         // Fetch folders
-        const foldersResponse = await fetch("/api/folders/tree")
+        const foldersResponse = await fetch("/api/folders/tree");
         if (foldersResponse.ok) {
-          const data = await foldersResponse.json()
-          const flatFolders = flattenFolders(data.tree)
-          setAvailableFolders(flatFolders)
+          const data = await foldersResponse.json();
+          const flatFolders = flattenFolders(data.tree);
+          setAvailableFolders(flatFolders);
         }
       } catch (error) {
-        console.error("Error fetching data:", error)
+        console.error("Error fetching data:", error);
       }
-    }
+    };
 
     if (open) {
-      fetchData()
-      setSelectedFolderId(currentFolderId || null)
+      fetchData();
+      setSelectedFolderId(currentFolderId || null);
     }
-  }, [open, currentFolderId])
+  }, [open, currentFolderId]);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const flattenFolders = (folders: any[]): FolderOption[] => {
-    const result: FolderOption[] = []
+    const result: FolderOption[] = [];
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const flatten = (folderList: any[]) => {
@@ -131,29 +153,29 @@ export function EnhancedAddWebsiteDialog({ onWebsiteAdded, currentFolderId }: En
           path: folder.path,
           level: folder.level,
           color: folder.color,
-        })
+        });
         if (folder.children && folder.children.length > 0) {
-          flatten(folder.children)
+          flatten(folder.children);
         }
       }
-    }
+    };
 
-    flatten(folders)
-    return result
-  }
+    flatten(folders);
+    return result;
+  };
 
   const addTag = (tagName: string) => {
-    const trimmedTag = tagName.trim().toLowerCase()
+    const trimmedTag = tagName.trim().toLowerCase();
     if (trimmedTag && !selectedTags.includes(trimmedTag)) {
-      setSelectedTags([...selectedTags, trimmedTag])
+      setSelectedTags([...selectedTags, trimmedTag]);
     }
-    setNewTagName("")
-    setTagSearchOpen(false)
-  }
+    setNewTagName("");
+    setTagSearchOpen(false);
+  };
 
   const removeTag = (tagToRemove: string) => {
-    setSelectedTags(selectedTags.filter((tag) => tag !== tagToRemove))
-  }
+    setSelectedTags(selectedTags.filter((tag) => tag !== tagToRemove));
+  };
 
   const generateAIContent = async () => {
     if (!url.trim()) {
@@ -161,11 +183,11 @@ export function EnhancedAddWebsiteDialog({ onWebsiteAdded, currentFolderId }: En
         title: "URL Required",
         description: "Please enter a URL first to generate AI content",
         variant: "destructive",
-      })
-      return
+      });
+      return;
     }
 
-    setAiGenerating(true)
+    setAiGenerating(true);
     try {
       const response = await fetch("/api/websites/preview", {
         method: "POST",
@@ -173,44 +195,46 @@ export function EnhancedAddWebsiteDialog({ onWebsiteAdded, currentFolderId }: En
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ url: url.trim() }),
-      })
+      });
 
       if (response.ok) {
-        const data = await response.json()
-        setTitle(data.title || "")
-        setDescription(data.description || "")
+        const data = await response.json();
+        setTitle(data.title || "");
+        setDescription(data.description || "");
         toast({
           title: "AI Content Generated!",
-          description: "Title and description have been automatically generated",
-        })
+          description:
+            "Title and description have been automatically generated",
+        });
       } else {
-        throw new Error("Failed to generate content")
+        throw new Error("Failed to generate content");
       }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       toast({
         title: "AI Generation Failed",
-        description: "Could not generate content. Please try again or enter manually.",
+        description:
+          "Could not generate content. Please try again or enter manually.",
         variant: "destructive",
-      })
+      });
     } finally {
-      setAiGenerating(false)
+      setAiGenerating(false);
     }
-  }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     if (!url.trim()) {
       toast({
         title: "URL Required",
         description: "Please enter a valid URL",
         variant: "destructive",
-      })
-      return
+      });
+      return;
     }
 
-    setLoading(true)
+    setLoading(true);
 
     try {
       const response = await fetch("/api/websites", {
@@ -226,48 +250,51 @@ export function EnhancedAddWebsiteDialog({ onWebsiteAdded, currentFolderId }: En
           scheduledFor: scheduledFor?.toISOString(),
           folderId: selectedFolderId,
         }),
-      })
+      });
 
       if (response.status === 409) {
         // URL already exists
-        const data = await response.json()
-        setExistingWebsite(data.existingWebsite)
-        setShowReplaceDialog(true)
-        setLoading(false)
-        return
+        const data = await response.json();
+        setExistingWebsite(data.existingWebsite);
+        setShowReplaceDialog(true);
+        setLoading(false);
+        return;
       }
 
       if (!response.ok) {
-        throw new Error("Failed to add website")
+        throw new Error("Failed to add website");
       }
 
-      const website = await response.json()
+      const website = await response.json();
 
       const folderName = selectedFolderId
-        ? availableFolders.find((f) => f._id === selectedFolderId)?.name || "folder"
-        : "root"
+        ? availableFolders.find((f) => f._id === selectedFolderId)?.name ||
+          "folder"
+        : "root";
 
       toast({
         title: "Website Added!",
-        description: `${website.title} has been added to ${folderName}${scheduledFor ? " with reminder set" : ""}`,
-      })
+        description: `${website.title} has been added to ${folderName}${
+          scheduledFor ? " with reminder set" : ""
+        }`,
+      });
 
-      resetForm()
-      onWebsiteAdded()
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      resetForm();
+      onWebsiteAdded();
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       toast({
         title: "Error",
         description: "Failed to add website. Please try again.",
         variant: "destructive",
-      })
+      });
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const handleReplace = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
       const response = await fetch("/api/websites/replace", {
         method: "POST",
@@ -283,62 +310,62 @@ export function EnhancedAddWebsiteDialog({ onWebsiteAdded, currentFolderId }: En
           replaceId: existingWebsite._id,
           folderId: selectedFolderId,
         }),
-      })
+      });
 
       if (!response.ok) {
-        throw new Error("Failed to replace website")
+        throw new Error("Failed to replace website");
       }
 
-      const website = await response.json()
+      const website = await response.json();
 
       toast({
         title: "Website Replaced!",
         description: `${website.title} has been updated in your collection`,
-      })
+      });
 
-      resetForm()
-      setShowReplaceDialog(false)
-      onWebsiteAdded()
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      resetForm();
+      setShowReplaceDialog(false);
+      onWebsiteAdded();
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       toast({
         title: "Error",
         description: "Failed to replace website. Please try again.",
         variant: "destructive",
-      })
+      });
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const resetForm = () => {
-    setUrl("")
-    setTitle("")
-    setDescription("")
-    setSelectedTags([])
-    setNewTagName("")
-    setScheduledFor(undefined)
-    setSelectedFolderId(currentFolderId || null)
-    setOpen(false)
-    setExistingWebsite(null)
-  }
+    setUrl("");
+    setTitle("");
+    setDescription("");
+    setSelectedTags([]);
+    setNewTagName("");
+    setScheduledFor(undefined);
+    setSelectedFolderId(currentFolderId || null);
+    setOpen(false);
+    setExistingWebsite(null);
+  };
 
   const getTagColor = (tagName: string) => {
-    const tag = availableTags.find((t) => t.name === tagName)
-    return tag?.color || "#3b82f6"
-  }
+    const tag = availableTags.find((t) => t.name === tagName);
+    return tag?.color || "#3b82f6";
+  };
 
   const getFolderDisplayName = (folderId: string | null) => {
-    if (!folderId) return "Home (Root)"
-    const folder = availableFolders.find((f) => f._id === folderId)
-    return folder ? folder.path : "Unknown Folder"
-  }
+    if (!folderId) return "Home (Root)";
+    const folder = availableFolders.find((f) => f._id === folderId);
+    return folder ? folder.path : "Unknown Folder";
+  };
 
   return (
     <>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button className="flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-200">
+          <Button className="flex items-center text-white space-x-2 bg-gradient-to-r from-rose-600 to-yellow-600 hover:from-rose-700 hover:to-yellow-700 shadow-lg hover:shadow-xl transition-all duration-200">
             <Plus className="w-4 h-4" />
             <span>Add Website</span>
           </Button>
@@ -350,8 +377,9 @@ export function EnhancedAddWebsiteDialog({ onWebsiteAdded, currentFolderId }: En
               <span>Add New Website</span>
             </DialogTitle>
             <DialogDescription>
-              Add any website, YouTube video, Twitter post, or Instagram post. Our AI will automatically generate titles
-              and descriptions if you don&apos;t provide them.
+              Add any website, YouTube video, Twitter post, or Instagram post.
+              Our AI will automatically generate titles and descriptions if you
+              don&apos;t provide them.
             </DialogDescription>
           </DialogHeader>
 
@@ -374,7 +402,11 @@ export function EnhancedAddWebsiteDialog({ onWebsiteAdded, currentFolderId }: En
                   variant="outline"
                   className="flex items-center space-x-2 bg-transparent"
                 >
-                  {aiGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Wand2 className="w-4 h-4" />}
+                  {aiGenerating ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Wand2 className="w-4 h-4" />
+                  )}
                   <span className="hidden sm:inline">AI Generate</span>
                 </Button>
               </div>
@@ -385,7 +417,9 @@ export function EnhancedAddWebsiteDialog({ onWebsiteAdded, currentFolderId }: En
               <Label htmlFor="folder">Save to Folder</Label>
               <Select
                 value={selectedFolderId || "root"}
-                onValueChange={(value) => setSelectedFolderId(value === "root" ? null : value)}
+                onValueChange={(value) =>
+                  setSelectedFolderId(value === "root" ? null : value)
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select a folder">
@@ -393,10 +427,14 @@ export function EnhancedAddWebsiteDialog({ onWebsiteAdded, currentFolderId }: En
                       {selectedFolderId ? (
                         <Folder
                           className="w-4 h-4"
-                          style={{ color: availableFolders.find((f) => f._id === selectedFolderId)?.color }}
+                          style={{
+                            color: availableFolders.find(
+                              (f) => f._id === selectedFolderId
+                            )?.color,
+                          }}
                         />
                       ) : (
-                        <Home className="w-4 h-4 text-blue-500" />
+                        <Home className="w-4 h-4 text-rose-500" />
                       )}
                       <span>{getFolderDisplayName(selectedFolderId)}</span>
                     </div>
@@ -405,14 +443,20 @@ export function EnhancedAddWebsiteDialog({ onWebsiteAdded, currentFolderId }: En
                 <SelectContent>
                   <SelectItem value="root">
                     <div className="flex items-center space-x-2">
-                      <Home className="w-4 h-4 text-blue-500" />
+                      <Home className="w-4 h-4 text-rose-500" />
                       <span>Home (Root)</span>
                     </div>
                   </SelectItem>
                   {availableFolders.map((folder) => (
                     <SelectItem key={folder._id} value={folder._id}>
-                      <div className="flex items-center space-x-2" style={{ paddingLeft: `${folder.level * 16}px` }}>
-                        <Folder className="w-4 h-4" style={{ color: folder.color }} />
+                      <div
+                        className="flex items-center space-x-2"
+                        style={{ paddingLeft: `${folder.level * 16}px` }}
+                      >
+                        <Folder
+                          className="w-4 h-4"
+                          style={{ color: folder.color }}
+                        />
                         <span>{folder.name}</span>
                       </div>
                     </SelectItem>
@@ -455,10 +499,14 @@ export function EnhancedAddWebsiteDialog({ onWebsiteAdded, currentFolderId }: En
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
-                    className={`w-full justify-start text-left font-normal ${!scheduledFor && "text-muted-foreground"}`}
+                    className={`w-full justify-start text-left font-normal ${
+                      !scheduledFor && "text-muted-foreground"
+                    }`}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {scheduledFor ? format(scheduledFor, "PPP") : "Pick a date for reminder"}
+                    {scheduledFor
+                      ? format(scheduledFor, "PPP")
+                      : "Pick a date for reminder"}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
@@ -466,8 +514,8 @@ export function EnhancedAddWebsiteDialog({ onWebsiteAdded, currentFolderId }: En
                     mode="single"
                     selected={scheduledFor}
                     onSelect={(date) => {
-                      setScheduledFor(date)
-                      setCalendarOpen(false)
+                      setScheduledFor(date);
+                      setCalendarOpen(false);
                     }}
                     disabled={(date) => date < new Date()}
                     initialFocus
@@ -477,9 +525,15 @@ export function EnhancedAddWebsiteDialog({ onWebsiteAdded, currentFolderId }: En
               {scheduledFor && (
                 <div className="flex items-center justify-between">
                   <p className="text-sm text-muted-foreground">
-                    You&apos;ll receive an email reminder on {format(scheduledFor, "PPP")}
+                    You&apos;ll receive an email reminder on{" "}
+                    {format(scheduledFor, "PPP")}
                   </p>
-                  <Button type="button" variant="ghost" size="sm" onClick={() => setScheduledFor(undefined)}>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setScheduledFor(undefined)}
+                  >
                     Clear
                   </Button>
                 </div>
@@ -505,7 +559,11 @@ export function EnhancedAddWebsiteDialog({ onWebsiteAdded, currentFolderId }: En
                   </PopoverTrigger>
                   <PopoverContent className="w-full p-0">
                     <Command>
-                      <CommandInput placeholder="Search tags..." value={newTagName} onValueChange={setNewTagName} />
+                      <CommandInput
+                        placeholder="Search tags..."
+                        value={newTagName}
+                        onValueChange={setNewTagName}
+                      />
                       <CommandList>
                         <CommandEmpty>
                           <div className="p-2">
@@ -531,7 +589,10 @@ export function EnhancedAddWebsiteDialog({ onWebsiteAdded, currentFolderId }: En
                                 className="flex items-center justify-between"
                               >
                                 <div className="flex items-center space-x-2">
-                                  <div className="w-3 h-3 rounded-full" style={{ backgroundColor: tag.color }} />
+                                  <div
+                                    className="w-3 h-3 rounded-full"
+                                    style={{ backgroundColor: tag.color }}
+                                  />
                                   <span>{tag.name}</span>
                                 </div>
                                 <div className="flex items-center space-x-2 text-xs text-muted-foreground">
@@ -555,10 +616,16 @@ export function EnhancedAddWebsiteDialog({ onWebsiteAdded, currentFolderId }: En
                       key={tag}
                       variant="secondary"
                       className="flex items-center space-x-1 px-3 py-1"
-                      style={{ backgroundColor: `${getTagColor(tag)}20`, color: getTagColor(tag) }}
+                      style={{
+                        backgroundColor: `${getTagColor(tag)}20`,
+                        color: getTagColor(tag),
+                      }}
                     >
                       <span>{tag}</span>
-                      <X className="w-3 h-3 cursor-pointer hover:text-destructive" onClick={() => removeTag(tag)} />
+                      <X
+                        className="w-3 h-3 cursor-pointer hover:text-destructive"
+                        onClick={() => removeTag(tag)}
+                      />
                     </Badge>
                   ))}
                 </div>
@@ -567,16 +634,21 @@ export function EnhancedAddWebsiteDialog({ onWebsiteAdded, currentFolderId }: En
 
             {/* AI Notice */}
             {(!title || !description) && (
-              <div className="flex items-center space-x-2 p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg border border-blue-200 dark:border-blue-800">
-                <Sparkles className="w-4 h-4 text-blue-600" />
-                <p className="text-sm text-blue-700 dark:text-blue-300">
-                  Empty fields will be automatically filled using AI when you submit
+              <div className="flex items-center space-x-2 p-3 bg-rose-50 dark:bg-rose-950/20 rounded-lg border border-rose-200 dark:border-rose-800">
+                <Sparkles className="w-4 h-4 text-rose-600" />
+                <p className="text-sm text-rose-700 dark:text-rose-300">
+                  Empty fields will be automatically filled using AI when you
+                  submit
                 </p>
               </div>
             )}
 
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setOpen(false)}
+              >
                 Cancel
               </Button>
               <Button type="submit" disabled={loading || aiGenerating}>
@@ -603,12 +675,15 @@ export function EnhancedAddWebsiteDialog({ onWebsiteAdded, currentFolderId }: En
           <AlertDialogHeader>
             <AlertDialogTitle>Website Already Exists</AlertDialogTitle>
             <AlertDialogDescription>
-              This URL already exists in your collection: &quot;{existingWebsite?.title}&quot;. Would you like to replace it with
+              This URL already exists in your collection: &quot;
+              {existingWebsite?.title}&quot;. Would you like to replace it with
               the new information?
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setShowReplaceDialog(false)}>Keep Existing</AlertDialogCancel>
+            <AlertDialogCancel onClick={() => setShowReplaceDialog(false)}>
+              Keep Existing
+            </AlertDialogCancel>
             <AlertDialogAction onClick={handleReplace} disabled={loading}>
               {loading ? (
                 <>
@@ -623,5 +698,5 @@ export function EnhancedAddWebsiteDialog({ onWebsiteAdded, currentFolderId }: En
         </AlertDialogContent>
       </AlertDialog>
     </>
-  )
+  );
 }

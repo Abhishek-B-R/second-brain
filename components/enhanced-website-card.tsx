@@ -1,18 +1,24 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { EmbeddedContent } from "./embedded-content"
-import { MoveWebsiteDialog } from "./move-website-dialog"
+} from "@/components/ui/dropdown-menu";
+import { EmbeddedContent } from "./embedded-content";
+import { MoveWebsiteDialog } from "./move-website-dialog";
 import {
   Heart,
   MoreVertical,
@@ -27,31 +33,31 @@ import {
   Eye,
   ExternalLink,
   MoveHorizontal,
-} from "lucide-react"
-import { toast } from "@/hooks/use-toast"
-import { cn } from "@/lib/utils"
+} from "lucide-react";
+import { toast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
 
 interface Website {
-  _id: string
-  type: "youtube" | "twitter" | "instagram" | "website"
-  url: string
-  title: string
-  description: string
-  thumbnail: string
-  tags: string[]
-  isFavorite: boolean
-  viewCount: number
-  embedId?: string
-  createdAt: string
-  folderId?: string
+  _id: string;
+  type: "youtube" | "twitter" | "instagram" | "website";
+  url: string;
+  title: string;
+  description: string;
+  thumbnail: string;
+  tags: string[];
+  isFavorite: boolean;
+  viewCount: number;
+  embedId?: string;
+  createdAt: string;
+  folderId?: string;
 }
 
 interface EnhancedWebsiteCardProps {
-  website: Website
-  onToggleFavorite: (id: string) => void
-  onDelete: (id: string) => void
-  onWebsiteMoved?: () => void
-  currentFolderId?: string | null
+  website: Website;
+  onToggleFavorite: (id: string) => void;
+  onDelete: (id: string) => void;
+  onWebsiteMoved?: () => void;
+  currentFolderId?: string | null;
 }
 
 const typeConfig = {
@@ -60,30 +66,34 @@ const typeConfig = {
     color: "bg-red-500",
     label: "YouTube",
     gradient: "from-red-500 to-red-600",
-    bgGradient: "from-red-50 to-red-100 dark:from-red-950/20 dark:to-red-900/20",
+    bgGradient:
+      "from-red-50 to-red-100 dark:from-red-950/20 dark:to-red-900/20",
   },
   twitter: {
     icon: MessageCircle,
-    color: "bg-blue-500",
+    color: "bg-rose-500",
     label: "Twitter",
-    gradient: "from-blue-500 to-blue-600",
-    bgGradient: "from-blue-50 to-blue-100 dark:from-blue-950/20 dark:to-blue-900/20",
+    gradient: "from-rose-500 to-rose-600",
+    bgGradient:
+      "from-rose-50 to-rose-100 dark:from-rose-950/20 dark:to-rose-900/20",
   },
   instagram: {
     icon: Instagram,
     color: "bg-pink-500",
     label: "Instagram",
-    gradient: "from-pink-500 to-purple-600",
-    bgGradient: "from-pink-50 to-purple-100 dark:from-pink-950/20 dark:to-purple-900/20",
+    gradient: "from-pink-500 to-yellow-600",
+    bgGradient:
+      "from-pink-50 to-yellow-100 dark:from-pink-950/20 dark:to-yellow-900/20",
   },
   website: {
     icon: Globe,
     color: "bg-green-500",
     label: "Website",
     gradient: "from-green-500 to-green-600",
-    bgGradient: "from-green-50 to-green-100 dark:from-green-950/20 dark:to-green-900/20",
+    bgGradient:
+      "from-green-50 to-green-100 dark:from-green-950/20 dark:to-green-900/20",
   },
-}
+};
 
 const tagColors = [
   "#3b82f6",
@@ -96,7 +106,7 @@ const tagColors = [
   "#84cc16",
   "#ec4899",
   "#6366f1",
-]
+];
 
 export function EnhancedWebsiteCard({
   website,
@@ -105,35 +115,35 @@ export function EnhancedWebsiteCard({
   onWebsiteMoved,
   currentFolderId,
 }: EnhancedWebsiteCardProps) {
-  const [isHovered, setIsHovered] = useState(false)
-  const [moveDialogOpen, setMoveDialogOpen] = useState(false)
-  const config = typeConfig[website.type]
-  const Icon = config.icon
+  const [isHovered, setIsHovered] = useState(false);
+  const [moveDialogOpen, setMoveDialogOpen] = useState(false);
+  const config = typeConfig[website.type];
+  const Icon = config.icon;
 
   const formatDate = (dateString: string) => {
     return new Intl.DateTimeFormat("en-US", {
       month: "short",
       day: "numeric",
       year: "numeric",
-    }).format(new Date(dateString))
-  }
+    }).format(new Date(dateString));
+  };
 
   const handleCopyLink = async () => {
     try {
-      await navigator.clipboard.writeText(website.url)
+      await navigator.clipboard.writeText(website.url);
       toast({
         title: "Link copied!",
         description: "The link has been copied to your clipboard.",
-      })
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      });
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       toast({
         title: "Failed to copy",
         description: "Could not copy the link to clipboard.",
         variant: "destructive",
-      })
+      });
     }
-  }
+  };
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -142,23 +152,23 @@ export function EnhancedWebsiteCard({
           title: website.title,
           text: website.description,
           url: website.url,
-        })
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        });
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
-        handleCopyLink()
+        handleCopyLink();
       }
     } else {
-      handleCopyLink()
+      handleCopyLink();
     }
-  }
+  };
 
   const handleVisit = () => {
-    window.open(website.url, "_blank", "noopener,noreferrer")
-  }
+    window.open(website.url, "_blank", "noopener,noreferrer");
+  };
 
   const getTagColor = (index: number) => {
-    return tagColors[index % tagColors.length]
-  }
+    return tagColors[index % tagColors.length];
+  };
 
   return (
     <>
@@ -169,7 +179,7 @@ export function EnhancedWebsiteCard({
           "transform-gpu will-change-transform relative",
           "h-[520px] flex flex-col", // Fixed height for all cards
           config.bgGradient,
-          isHovered && "shadow-2xl scale-[1.02] ring-2 ring-primary/20",
+          isHovered && "shadow-2xl scale-[1.02] ring-2 ring-primary/20"
         )}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
@@ -197,7 +207,7 @@ export function EnhancedWebsiteCard({
               className={cn(
                 "text-white border-0 shadow-lg backdrop-blur-sm font-medium px-3 py-1 pointer-events-auto",
                 `bg-gradient-to-r ${config.gradient}`,
-                "hover:scale-105 transition-transform duration-200",
+                "hover:scale-105 transition-transform duration-200"
               )}
             >
               <Icon className="w-3 h-3 mr-1.5" />
@@ -210,11 +220,18 @@ export function EnhancedWebsiteCard({
                 size="icon"
                 className="h-9 w-9 bg-white/95 hover:bg-white backdrop-blur-sm shadow-lg hover:scale-110 transition-all duration-200"
                 onClick={(e) => {
-                  e.stopPropagation()
-                  onToggleFavorite(website._id)
+                  e.stopPropagation();
+                  onToggleFavorite(website._id);
                 }}
               >
-                <Heart className={cn("w-4 h-4", website.isFavorite ? "fill-red-500 text-red-500" : "text-gray-600")} />
+                <Heart
+                  className={cn(
+                    "w-4 h-4",
+                    website.isFavorite
+                      ? "fill-red-500 text-red-500"
+                      : "text-gray-600"
+                  )}
+                />
               </Button>
 
               <DropdownMenu>
@@ -270,7 +287,10 @@ export function EnhancedWebsiteCard({
 
         {/* Card content below the embed - Flexible height with constraints */}
         <div className="flex-1 flex flex-col">
-          <CardHeader className="pb-3 relative z-10 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
+          <CardHeader
+            className="pb-3 relative z-10 flex-shrink-0"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="flex items-start justify-between">
               <CardTitle className="text-lg line-clamp-2 group-hover:text-primary transition-colors flex-1 mr-2 font-semibold min-h-[3.5rem]">
                 {website.title}
@@ -339,10 +359,10 @@ export function EnhancedWebsiteCard({
         website={website}
         currentFolderId={currentFolderId!}
         onWebsiteMoved={() => {
-          onWebsiteMoved?.()
-          setMoveDialogOpen(false)
+          onWebsiteMoved?.();
+          setMoveDialogOpen(false);
         }}
       />
     </>
-  )
+  );
 }

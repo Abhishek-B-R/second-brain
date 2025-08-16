@@ -1,47 +1,54 @@
-"use client"
+"use client";
 
-import { signIn, getSession } from "next-auth/react"
-import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
-import { Brain, Chrome, Sparkles, User, Shield } from "lucide-react"
-import { toast } from "@/hooks/use-toast"
-import { Toaster } from "@/components/ui/toaster"
+import { signIn, getSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Brain, Chrome, Sparkles, User, Shield } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
+import { Toaster } from "@/components/ui/toaster";
 
 export default function SignIn() {
-  const router = useRouter()
-  const [isLoading, setIsLoading] = useState(false)
-  const [isGuestLoading, setIsGuestLoading] = useState(false)
-  const [guestName, setGuestName] = useState("")
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isGuestLoading, setIsGuestLoading] = useState(false);
+  const [guestName, setGuestName] = useState("");
 
   useEffect(() => {
     const checkSession = async () => {
-      const session = await getSession()
+      const session = await getSession();
       if (session) {
-        router.push("/")
+        router.push("/");
       }
-    }
-    checkSession()
-  }, [router])
+    };
+    checkSession();
+  }, [router]);
 
   const handleSignIn = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
     try {
-      await signIn("google", { callbackUrl: "/" })
+      await signIn("google", { callbackUrl: "/" });
     } catch (error) {
-      console.error("Sign in error:", error)
+      console.error("Sign in error:", error);
       toast({
         title: "Sign in failed",
-        description: "There was an error signing in with Google. Please try again.",
+        description:
+          "There was an error signing in with Google. Please try again.",
         variant: "destructive",
-      })
+      });
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleGuestSignIn = async () => {
     if (!guestName.trim()) {
@@ -49,11 +56,11 @@ export default function SignIn() {
         title: "Name required",
         description: "Please enter your name to continue as guest.",
         variant: "destructive",
-      })
-      return
+      });
+      return;
     }
 
-    setIsGuestLoading(true)
+    setIsGuestLoading(true);
     try {
       const result = await signIn("credentials", {
         email: "guest@secondbrain.demo",
@@ -61,46 +68,50 @@ export default function SignIn() {
         isGuest: "true",
         callbackUrl: "/",
         redirect: false,
-      })
+      });
 
       if (result?.error) {
         toast({
           title: "Guest sign in failed",
-          description: "There was an error signing in as guest. Please try again.",
+          description:
+            "There was an error signing in as guest. Please try again.",
           variant: "destructive",
-        })
+        });
       } else if (result?.ok) {
-        const session = await getSession()
+        const session = await getSession();
         if (session) {
-          router.push("/")
+          router.push("/");
         }
       }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       toast({
         title: "Guest sign in failed",
-        description: "There was an error signing in as guest. Please try again.",
+        description:
+          "There was an error signing in as guest. Please try again.",
         variant: "destructive",
-      })
+      });
     } finally {
-      setIsGuestLoading(false)
+      setIsGuestLoading(false);
     }
-  }
+  };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-blue-900 dark:to-indigo-900 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-rose-50 via-lime-50 to-yellow-50 dark:from-gray-600 dark:via-rose-900 dark:to-amber-900 p-4">
       <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
 
       <Card className="w-full max-w-md glass-effect shadow-2xl">
         <CardHeader className="text-center space-y-4">
-          <div className="mx-auto w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center">
+          <div className="mx-auto w-16 h-16 bg-gradient-to-br from-rose-500 to-yellow-600 rounded-2xl flex items-center justify-center">
             <Brain className="w-8 h-8 text-white" />
           </div>
           <div>
-            <CardTitle className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <CardTitle className="text-2xl font-bold bg-gradient-to-r from-rose-600 to-yellow-600 bg-clip-text text-transparent">
               SecondBrain
             </CardTitle>
-            <CardDescription className="text-base mt-2">Your digital knowledge hub awaits</CardDescription>
+            <CardDescription className="text-base mt-2">
+              Your digital knowledge hub awaits
+            </CardDescription>
           </div>
         </CardHeader>
 
@@ -108,7 +119,8 @@ export default function SignIn() {
           <div className="text-center space-y-2">
             <h3 className="text-lg font-semibold">Welcome back</h3>
             <p className="text-sm text-muted-foreground">
-              Sign in to access your curated collection of websites, videos, and insights
+              Sign in to access your curated collection of websites, videos, and
+              insights
             </p>
           </div>
 
@@ -116,7 +128,7 @@ export default function SignIn() {
           <Button
             onClick={handleSignIn}
             disabled={isLoading || isGuestLoading}
-            className="w-full h-12 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium rounded-xl transition-all duration-200 transform hover:scale-105"
+            className="w-full h-12 bg-gradient-to-r from-rose-600 to-yellow-600 hover:from-rose-700 hover:to-yellow-700 text-white font-medium rounded-xl transition-all duration-200 transform hover:scale-105"
           >
             {isLoading ? (
               <div className="flex items-center space-x-2">
@@ -136,7 +148,9 @@ export default function SignIn() {
               <Separator className="w-full" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">Or try without account</span>
+              <span className="bg-background px-2 text-muted-foreground">
+                Or try without account
+              </span>
             </div>
           </div>
 
@@ -155,7 +169,7 @@ export default function SignIn() {
               maxLength={50}
               onKeyPress={(e) => {
                 if (e.key === "Enter") {
-                  handleGuestSignIn()
+                  handleGuestSignIn();
                 }
               }}
             />
@@ -164,7 +178,7 @@ export default function SignIn() {
               onClick={handleGuestSignIn}
               disabled={isLoading || isGuestLoading || !guestName.trim()}
               variant="outline"
-              className="w-full h-12 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium rounded-xl transition-all duration-200 transform hover:scale-105"
+              className="w-full h-12 bg-gradient-to-r from-rose-600 to-yellow-600 hover:from-rose-700 hover:to-yellow-700 text-white font-medium rounded-xl transition-all duration-200 transform hover:scale-105"
             >
               {isGuestLoading ? (
                 <div className="flex items-center space-x-2">
@@ -189,5 +203,5 @@ export default function SignIn() {
 
       <Toaster />
     </div>
-  )
+  );
 }
